@@ -33,8 +33,8 @@ class RainbowBottomTabBar extends StatelessWidget {
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: RainbowBlur.subtle,
-          sigmaY: RainbowBlur.subtle,
+          sigmaX: RainbowBlur.card,
+          sigmaY: RainbowBlur.card,
         ),
         child: DecoratedBox(
           decoration: BoxDecoration(

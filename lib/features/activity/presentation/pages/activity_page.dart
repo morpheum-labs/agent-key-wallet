@@ -8,6 +8,7 @@ import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
+import 'package:rainbow_flutter/design_system/components/rainbow_glass_surface.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_page_title.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
 import 'package:rainbow_flutter/design_system/radius.dart';
@@ -309,29 +310,20 @@ class _ActivityTxRow extends StatelessWidget {
         ),
     };
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(RainbowRadius.md),
-        onTap: () async {
-          final uri = Uri.parse(explorerTxUrl);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri, mode: LaunchMode.externalApplication);
-          }
-        },
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(RainbowRadius.md),
-            border: Border.all(color: AppColors.borderGlass),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.surfacePrimary.withValues(alpha: 0.72),
-                AppColors.surfaceSecondary.withValues(alpha: 0.45),
-              ],
-            ),
-          ),
+    return RainbowGlassSurface(
+      borderRadius: BorderRadius.circular(RainbowRadius.md),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(RainbowRadius.md),
+          splashColor: AppColors.accent.withValues(alpha: 0.12),
+          highlightColor: AppColors.accent.withValues(alpha: 0.06),
+          onTap: () async {
+            final uri = Uri.parse(explorerTxUrl);
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          },
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: RainbowSpacing.lg.w,

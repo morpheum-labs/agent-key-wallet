@@ -1,4 +1,5 @@
 export 'rainbow_balance_hero.dart';
+export 'rainbow_glass_surface.dart';
 export 'rainbow_bottom_sheet.dart';
 export 'rainbow_bottom_tab_bar.dart';
 export 'rainbow_page_title.dart';

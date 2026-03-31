@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rainbow_flutter/core/locator.dart';
-import 'package:rainbow_flutter/core/widgets/rainbow_hero_glows.dart';
+import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_balance_hero.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_quick_actions.dart';
@@ -72,19 +72,10 @@ class _HomeWalletContentState extends State<_HomeWalletContent> {
 
         return Scaffold(
           backgroundColor: AppColors.background,
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: RainbowGradients.walletBackdrop(),
-                  ),
-                ),
-              ),
-              const RainbowHeroGlows(),
-              Positioned.fill(
-                child: RefreshIndicator(
+          body: WalletFlowBackground(
+            showHeroGlows: true,
+            child: Positioned.fill(
+              child: RefreshIndicator(
                   color: AppColors.accentSecondary,
                   backgroundColor: AppColors.surfaceElevated,
                   displacement: 48,
@@ -206,8 +197,7 @@ class _HomeWalletContentState extends State<_HomeWalletContent> {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
         );
       },
     );
