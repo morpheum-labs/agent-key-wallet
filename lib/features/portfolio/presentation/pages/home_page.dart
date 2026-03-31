@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
+import 'package:rainbow_flutter/core/di/injection.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
@@ -83,7 +85,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: RainbowSpacing.xs.h),
                                 Text(
-                                  'Ethereum mainnet · fiat when price feeds land',
+                                  '${getIt<ChainSettingsRepository>().selectedSync.name} · fiat when price feeds land',
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         fontSize: 13.sp,
                                         color: AppColors.labelSecondary,

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restart_app/restart_app.dart';
 
+import 'package:rainbow_flutter/core/config/chain_config.dart';
+import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
+import 'package:rainbow_flutter/core/di/injection.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
@@ -15,6 +19,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chainRepo = getIt<ChainSettingsRepository>();
+    final selectedId = chainRepo.readChainIdSync();
+
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         final summary = state is AuthAuthenticated ? state.summary : null;
@@ -40,7 +47,7 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               SafeArea(
-                child: Padding(
+                child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,6 +76,63 @@ class ProfilePage extends StatelessWidget {
                             ),
                       ),
                       SizedBox(height: RainbowSpacing.xxl.h),
+                      Text(
+                        'Network',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                      SizedBox(height: RainbowSpacing.sm.h),
+                      Text(
+                        'Balance, send, and receive use this RPC. The app restarts after you switch.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 13.sp,
+                              color: AppColors.labelSecondary,
+                            ),
+                      ),
+                      SizedBox(height: RainbowSpacing.md.h),
+                      RadioListTile<int>(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          ChainConfig.mainnet.name,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        subtitle: Text(
+                          'Chain ID ${ChainConfig.mainnet.chainId}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.labelSecondary,
+                              ),
+                        ),
+                        value: ChainConfig.mainnet.chainId,
+                        groupValue: selectedId,
+                        onChanged: (v) async {
+                          if (v == null || v == selectedId) return;
+                          await chainRepo.setChainId(v);
+                          Restart.restartApp();
+                        },
+                      ),
+                      RadioListTile<int>(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          ChainConfig.sepolia.name,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        subtitle: Text(
+                          'Chain ID ${ChainConfig.sepolia.chainId} · test ETH only',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.labelSecondary,
+                              ),
+                        ),
+                        value: ChainConfig.sepolia.chainId,
+                        groupValue: selectedId,
+                        onChanged: (v) async {
+                          if (v == null || v == selectedId) return;
+                          await chainRepo.setChainId(v);
+                          Restart.restartApp();
+                        },
+                      ),
+                      SizedBox(height: RainbowSpacing.xxl.h),
                       PrimaryButton(
                         label: 'Log out',
                         icon: Icons.logout_rounded,
@@ -76,6 +140,7 @@ class ProfilePage extends StatelessWidget {
                               const AuthLogoutRequested(),
                             ),
                       ),
+                      SizedBox(height: RainbowSpacing.xxl.h),
                     ],
                   ),
                 ),

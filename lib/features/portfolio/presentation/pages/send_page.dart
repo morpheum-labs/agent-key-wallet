@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
 import 'package:rainbow_flutter/core/di/injection.dart';
 import 'package:rainbow_flutter/core/error/failures.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
@@ -9,6 +10,7 @@ import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/portfolio/domain/usecases/send_eth_usecase.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SendPage extends StatefulWidget {
   const SendPage({super.key});
@@ -39,6 +41,7 @@ class _SendPageState extends State<SendPage> {
         amountEthString: _amountController.text,
       );
       if (!mounted) return;
+      final explorerUrl = getIt<ChainSettingsRepository>().selectedSync.txExplorerUrl(hash);
       await showDialog<void>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -49,6 +52,15 @@ class _SendPageState extends State<SendPage> {
             style: Theme.of(ctx).textTheme.bodyMedium,
           ),
           actions: [
+            TextButton(
+              onPressed: () async {
+                final uri = Uri.parse(explorerUrl);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              child: const Text('View on explorer'),
+            ),
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
               child: const Text('OK'),
@@ -95,7 +107,7 @@ class _SendPageState extends State<SendPage> {
             children: [
               SizedBox(height: RainbowSpacing.lg.h),
               Text(
-                'Send native ETH on Ethereum mainnet (same RPC as balance). Gas is paid in ETH.',
+                'Send native ETH on ${getIt<ChainSettingsRepository>().selectedSync.name} (same RPC as balance). Gas is paid in ETH.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: 14.sp,
                       color: AppColors.labelSecondary,
