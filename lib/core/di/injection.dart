@@ -1,10 +1,16 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
+import 'package:rainbow_flutter/core/config/app_constants.dart';
 import 'package:rainbow_flutter/features/auth/data/datasources/wallet_local_datasource.dart';
 import 'package:rainbow_flutter/features/auth/data/datasources/wallet_private_key_datasource.dart';
 import 'package:rainbow_flutter/features/auth/data/repositories/wallet_repository_impl.dart';
 import 'package:rainbow_flutter/features/auth/domain/repositories/wallet_repository.dart';
 import 'package:rainbow_flutter/features/auth/domain/usecases/generate_mnemonic_usecase.dart';
+import 'package:rainbow_flutter/features/portfolio/data/datasources/eth_balance_remote_datasource.dart';
+import 'package:rainbow_flutter/features/portfolio/domain/usecases/fetch_eth_balance_usecase.dart';
+import 'package:rainbow_flutter/features/portfolio/domain/usecases/send_eth_usecase.dart';
+import 'package:web3dart/web3dart.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -26,5 +32,19 @@ Future<void> configureDependencies() async {
   );
   getIt.registerLazySingleton<GenerateMnemonicUseCase>(
     GenerateMnemonicUseCase.new,
+  );
+
+  getIt.registerLazySingleton<http.Client>(http.Client.new);
+  getIt.registerLazySingleton<Web3Client>(
+    () => Web3Client(kEthereumMainnetRpcUrl, getIt<http.Client>()),
+  );
+  getIt.registerLazySingleton<EthBalanceRemoteDataSource>(
+    () => EthBalanceRemoteDataSource(client: getIt()),
+  );
+  getIt.registerLazySingleton<FetchEthBalanceUseCase>(
+    () => FetchEthBalanceUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<SendEthUseCase>(
+    () => SendEthUseCase(getIt(), getIt()),
   );
 }

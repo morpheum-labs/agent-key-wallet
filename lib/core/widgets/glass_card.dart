@@ -2,9 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
+import '../../design_system/blurs.dart';
+import '../../design_system/colors.dart';
 
-/// Frosted panel with subtle border — Rainbow-style glass without heavy shaders.
+/// Frosted panel with subtle border — Rainbow-style glass.
 class GlassCard extends StatelessWidget {
   const GlassCard({
     super.key,
@@ -22,7 +23,7 @@ class GlassCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        filter: ImageFilter.blur(sigmaX: RainbowBlur.card, sigmaY: RainbowBlur.card),
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius),
@@ -30,16 +31,17 @@ class GlassCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.surface.withValues(alpha: 0.55),
-                AppColors.surfaceElevated.withValues(alpha: 0.35),
+                AppColors.surfacePrimary.withValues(alpha: 0.62),
+                AppColors.surfaceSecondary.withValues(alpha: 0.42),
+                AppColors.surfaceElevated.withValues(alpha: 0.28),
               ],
             ),
             border: Border.all(color: AppColors.borderGlass),
             boxShadow: [
               BoxShadow(
-                color: AppColors.accent.withValues(alpha: 0.08),
-                blurRadius: 32,
-                offset: const Offset(0, 16),
+                color: AppColors.accent.withValues(alpha: 0.1),
+                blurRadius: 36,
+                offset: const Offset(0, 18),
               ),
             ],
           ),

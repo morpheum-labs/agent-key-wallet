@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rainbow_flutter/core/di/injection.dart';
@@ -41,21 +42,28 @@ class _RainbowAppState extends State<RainbowApp> {
   Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>.value(
       value: _authBloc,
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.dark(),
-        routerConfig: _router,
+      child: ScreenUtilInit(
+        designSize: const Size(390, 844),
+        minTextAdapt: true,
+        splitScreenMode: true,
         builder: (context, child) {
-          return BlocListener<AuthBloc, AuthState>(
-            listenWhen: (previous, current) => current is AuthError,
-            listener: (context, state) {
-              if (state is AuthError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
-              }
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.dark(),
+            routerConfig: _router,
+            builder: (context, child) {
+              return BlocListener<AuthBloc, AuthState>(
+                listenWhen: (previous, current) => current is AuthError,
+                listener: (context, state) {
+                  if (state is AuthError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.message)),
+                    );
+                  }
+                },
+                child: child ?? const SizedBox.shrink(),
+              );
             },
-            child: child ?? const SizedBox.shrink(),
           );
         },
       ),

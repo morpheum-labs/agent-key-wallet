@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bip39/bip39.dart' as bip39;
 
 import '../../../../core/error/failures.dart';
@@ -59,6 +61,19 @@ class WalletRepositoryImpl implements WalletRepository {
     if (pk != null && pk.isNotEmpty) {
       final addr = EthereumWalletDerivation.addressHexFromPrivateKeyHex(pk);
       return WalletSummary(ethereumAddressHex: addr);
+    }
+    throw const WalletFailure('No wallet found');
+  }
+
+  @override
+  Future<Uint8List> loadEthereumPrivateKeyBytes() async {
+    final mnemonic = await _mnemonic.readMnemonic();
+    if (mnemonic != null && mnemonic.isNotEmpty) {
+      return EthereumWalletDerivation.privateKeyBytesFromMnemonic(mnemonic);
+    }
+    final pk = await _pk.readPrivateKey();
+    if (pk != null && pk.isNotEmpty) {
+      return EthereumWalletDerivation.privateKeyBytesFromPkHex(pk);
     }
     throw const WalletFailure('No wallet found');
   }
