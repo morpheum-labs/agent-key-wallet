@@ -14,7 +14,7 @@ import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/portfolio/domain/usecases/send_eth_usecase.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Shared body for [SendPage] and [showWalletSendSheet].
+/// Shared body for the send route and modal sheet.
 class SendSheetContent extends StatefulWidget {
   const SendSheetContent({
     super.key,

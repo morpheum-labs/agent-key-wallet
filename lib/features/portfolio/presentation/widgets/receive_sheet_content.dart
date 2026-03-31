@@ -16,7 +16,7 @@ import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_state.dart';
 
-/// Shared body for [ReceivePage] and [showWalletReceiveSheet].
+/// Shared body for the receive route and modal sheet.
 class ReceiveSheetContent extends StatelessWidget {
   const ReceiveSheetContent({
     super.key,

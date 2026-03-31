@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/rainbow_hero_glows.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
@@ -18,6 +17,7 @@ import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_state.dart'
 import 'package:rainbow_flutter/features/portfolio/presentation/data/mock_portfolio_tokens.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/mappers/portfolio_token_mapper.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/token_list_tile.dart';
+import 'package:rainbow_flutter/features/portfolio/presentation/widgets/wallet_sheet_helpers.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/wallet_balances_future_builder.dart';
 
 class HomePage extends StatelessWidget {
@@ -134,8 +134,8 @@ class _HomeWalletContentState extends State<_HomeWalletContent> {
                                     .moveY(begin: 18, end: 0, curve: Curves.easeOutBack),
                                 SizedBox(height: RainbowSpacing.lg.h),
                                 RainbowQuickActions(
-                                  onReceive: () => context.push('/wallet/receive'),
-                                  onSend: () => context.push('/wallet/send'),
+                                  onReceive: () => showWalletReceiveSheet(context),
+                                  onSend: () => showWalletSendSheet(context),
                                   onSwap: () => context.go('/discover'),
                                   swapEnabled: true,
                                 )
