@@ -60,42 +60,43 @@ Future<T?> showRainbowModalBottomSheet<T>({
                 ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: maxH),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: RainbowSpacing.md.h),
-                        child: Center(
-                          child: Container(
-                            width: 40.w,
-                            height: 4.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.labelSecondary.withValues(alpha: 0.4),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (title != null)
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                         Padding(
-                          padding: EdgeInsets.only(
-                            left: RainbowSpacing.xxl.w,
-                            right: RainbowSpacing.xxl.w,
-                            bottom: RainbowSpacing.sm.h,
-                          ),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              title,
-                              style: Theme.of(modalContext).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.4,
-                                  ),
+                          padding: EdgeInsets.symmetric(vertical: RainbowSpacing.md.h),
+                          child: Center(
+                            child: Container(
+                              width: 40.w,
+                              height: 4.h,
+                              decoration: BoxDecoration(
+                                color: AppColors.labelSecondary.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
                             ),
                           ),
                         ),
-                      Flexible(
-                        child: SingleChildScrollView(
+                        if (title != null)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: RainbowSpacing.xxl.w,
+                              right: RainbowSpacing.xxl.w,
+                              bottom: RainbowSpacing.sm.h,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                title,
+                                style: Theme.of(modalContext).textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.4,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        Padding(
                           padding: EdgeInsets.only(
                             left: RainbowSpacing.xxl.w,
                             right: RainbowSpacing.xxl.w,
@@ -103,8 +104,8 @@ Future<T?> showRainbowModalBottomSheet<T>({
                           ),
                           child: builder(modalContext),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
