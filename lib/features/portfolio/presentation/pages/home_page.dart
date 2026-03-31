@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rainbow_flutter/core/config/token_contracts.dart';
 import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
 import 'package:rainbow_flutter/core/di/injection.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
@@ -14,6 +15,7 @@ import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_state.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/data/mock_portfolio_tokens.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/utils/eth_balance_ui.dart';
+import 'package:rainbow_flutter/features/portfolio/presentation/widgets/erc20_balance_future_builder.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/eth_balance_future_builder.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/token_list_tile.dart';
 
@@ -28,13 +30,19 @@ class HomePage extends StatelessWidget {
           return const Scaffold(body: SizedBox.shrink());
         }
         final address = state.summary.ethereumAddressHex;
+        final chain = getIt<ChainSettingsRepository>().selectedSync;
+        final base = mockPortfolioTokens(chain);
 
         return EthBalanceFutureBuilder(
           address: address,
-          builder: (context, snap) {
-            final tokens = applyEthSnapshot(mockPortfolioTokens(), snap);
+          builder: (context, ethSnap) {
+            return Erc20BalanceFutureBuilder(
+              contractAddress: TokenContracts.usdcAddressForChain(chain.chainId),
+              holderAddress: address,
+              builder: (context, usdcSnap) {
+                final tokens = applyEthAndUsdcSnapshots(base, ethSnap, usdcSnap);
 
-            return Scaffold(
+                return Scaffold(
               body: Stack(
                 children: [
                   const _HeroGlows(),
@@ -76,7 +84,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: RainbowSpacing.sm.h),
                                 Text(
-                                  ethBalanceHeadline(snap),
+                                  ethBalanceHeadline(ethSnap),
                                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                         fontSize: 42.sp,
                                         fontWeight: FontWeight.w700,
@@ -153,6 +161,8 @@ class HomePage extends StatelessWidget {
                   ),
                 ],
               ),
+            );
+              },
             );
           },
         );

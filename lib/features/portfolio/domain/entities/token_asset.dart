@@ -9,6 +9,8 @@ class TokenAsset extends Equatable {
     required this.balanceDisplay,
     required this.fiatDisplay,
     required this.accentColor,
+    this.erc20ContractAddress,
+    this.unitDecimals = 18,
   });
 
   final String symbol;
@@ -16,6 +18,12 @@ class TokenAsset extends Equatable {
   final String balanceDisplay;
   final String fiatDisplay;
   final Color accentColor;
+
+  /// If set, balance is read via ERC-20 [balanceOf] on this contract.
+  final String? erc20ContractAddress;
+
+  /// ERC-20 decimals for formatting (ETH native uses 18 for display only).
+  final int unitDecimals;
 
   /// URL segment for [GoRouter], e.g. `eth` → `/wallet/token/eth`.
   String get routeSlug => symbol.toLowerCase();
@@ -26,6 +34,8 @@ class TokenAsset extends Equatable {
     String? balanceDisplay,
     String? fiatDisplay,
     Color? accentColor,
+    String? erc20ContractAddress,
+    int? unitDecimals,
   }) {
     return TokenAsset(
       symbol: symbol ?? this.symbol,
@@ -33,9 +43,19 @@ class TokenAsset extends Equatable {
       balanceDisplay: balanceDisplay ?? this.balanceDisplay,
       fiatDisplay: fiatDisplay ?? this.fiatDisplay,
       accentColor: accentColor ?? this.accentColor,
+      erc20ContractAddress: erc20ContractAddress ?? this.erc20ContractAddress,
+      unitDecimals: unitDecimals ?? this.unitDecimals,
     );
   }
 
   @override
-  List<Object?> get props => [symbol, name, balanceDisplay, fiatDisplay, accentColor];
+  List<Object?> get props => [
+        symbol,
+        name,
+        balanceDisplay,
+        fiatDisplay,
+        accentColor,
+        erc20ContractAddress,
+        unitDecimals,
+      ];
 }
