@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../design_system/colors.dart';
 import '../../design_system/gradients.dart';
 
-class PrimaryButton extends StatelessWidget {
+class PrimaryButton extends StatefulWidget {
   const PrimaryButton({
     super.key,
     required this.label,
@@ -17,50 +16,59 @@ class PrimaryButton extends StatelessWidget {
   final IconData? icon;
 
   @override
+  State<PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<PrimaryButton> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final enabled = widget.onPressed != null;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: RainbowGradients.ctaShimmer(),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 20, color: AppColors.label),
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    label,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: AppColors.label,
-                      fontWeight: FontWeight.w600,
+      child: AnimatedScale(
+        scale: _pressed && enabled ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 110),
+        curve: Curves.easeOut,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: widget.onPressed,
+            onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+            onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,
+            onTapCancel: enabled ? () => setState(() => _pressed = false) : null,
+            child: Ink(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: RainbowGradients.ctaShimmer(),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.icon != null) ...[
+                      Icon(widget.icon, size: 20, color: AppColors.label),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      widget.label,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: AppColors.label,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    )
-        .animate(target: onPressed == null ? 0 : 1)
-        .scale(
-          duration: 140.ms,
-          curve: Curves.easeOutBack,
-          begin: const Offset(0.96, 0.96),
-          end: const Offset(1, 1),
-        );
+    );
   }
 }
