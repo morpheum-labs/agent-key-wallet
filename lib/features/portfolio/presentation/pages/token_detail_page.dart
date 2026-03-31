@@ -122,7 +122,7 @@ class TokenDetailPage extends StatelessWidget {
                               ),
                         ),
                         SizedBox(height: RainbowSpacing.xxl.h),
-                        if (token.symbol == 'ETH')
+                        if (token.symbol == network.nativeSymbol && network is EvmWalletNetwork)
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, authState) {
                               if (authState is! AuthAuthenticated) {
@@ -136,8 +136,9 @@ class TokenDetailPage extends StatelessWidget {
                               return EthBalanceFutureBuilder(
                                 address: authState.summary.ethereumAddressHex,
                                 builder: (context, snap) {
-                                  final row =
-                                      portfolioTokenMapper.mapEthDetailRow([token], snap).first;
+                                  final row = portfolioTokenMapper
+                                      .mapNativeEvmDetailRow([token], snap, network.nativeSymbol)
+                                      .first;
                                   return GlassCard(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
