@@ -43,4 +43,44 @@ abstract final class RainbowGradients {
       stops: [0.0, 0.55, 1.0],
     );
   }
+
+  /// Wallet / home backdrop — top-heavy blue → purple wash.
+  static LinearGradient walletBackdrop() {
+    return const LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFF1A1B4A),
+        Color(0xFF0B0E23),
+        Color(0xFF0B0E23),
+      ],
+      stops: [0.0, 0.42, 1.0],
+    );
+  }
+
+  /// Accent stripe behind balance or CTA row.
+  static LinearGradient accentRibbon() {
+    return const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        AppColors.accentBlue,
+        AppColors.accent,
+        AppColors.accentPurple,
+      ],
+      stops: [0.0, 0.5, 1.0],
+    );
+  }
+
+  /// Subtle vertical fade for lists over gradient bg.
+  static LinearGradient listFadeToBackground() {
+    return const LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0x000B0E23),
+        Color(0xFF0B0E23),
+      ],
+    );
+  }
 }

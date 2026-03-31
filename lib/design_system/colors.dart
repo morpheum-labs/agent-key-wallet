@@ -31,6 +31,17 @@ abstract final class AppColors {
   static const Color borderGlass = Color(0x1FFFFFFF);
   static const Color borderStrong = Color(0x33FFFFFF);
 
+  /// Modal / sheet scrim.
+  static const Color scrim = Color(0xB3000000);
+
+  /// Dim overlay on hero imagery.
+  static const Color overlay = Color(0x66000000);
+
+  // Semantic feedback (Rainbow-style accents)
+  static const Color success = accentGreen;
+  static const Color warning = Color(0xFFFFB020);
+  static const Color error = accentRed;
+
   /// Hero / marketing gradients (multi-stop).
   static const List<Color> heroGradient = [
     Color(0xFF7B61FF),

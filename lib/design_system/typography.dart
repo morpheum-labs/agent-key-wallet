@@ -3,14 +3,17 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'colors.dart';
-
 /// SF Pro Rounded on iOS; [Nunito](https://fonts.google.com/specimen/Nunito) elsewhere (rounded, readable).
 abstract final class RainbowTypography {
   static const String _iosRounded = '.SF Pro Rounded';
+  static const String _fallbackRounded = 'Nunito';
 
   static bool get _useSfProRounded =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+
+  /// For [ThemeData.fontFamily] so inputs and default text pick up the rounded stack.
+  static String? get fontFamily =>
+      _useSfProRounded ? _iosRounded : _fallbackRounded;
 
   static TextTheme textTheme(Color primary, Color secondary) {
     TextStyle base({
@@ -44,6 +47,30 @@ abstract final class RainbowTypography {
         fontSize: 34,
         weight: FontWeight.w700,
         letterSpacing: -0.6,
+        color: primary,
+      ),
+      displayMedium: base(
+        fontSize: 28,
+        weight: FontWeight.w700,
+        letterSpacing: -0.5,
+        color: primary,
+      ),
+      displaySmall: base(
+        fontSize: 24,
+        weight: FontWeight.w700,
+        letterSpacing: -0.4,
+        color: primary,
+      ),
+      headlineMedium: base(
+        fontSize: 20,
+        weight: FontWeight.w600,
+        letterSpacing: -0.3,
+        color: primary,
+      ),
+      headlineSmall: base(
+        fontSize: 18,
+        weight: FontWeight.w600,
+        letterSpacing: -0.25,
         color: primary,
       ),
       titleLarge: base(
@@ -81,6 +108,19 @@ abstract final class RainbowTypography {
         weight: FontWeight.w600,
         height: 1.2,
         color: primary,
+      ),
+      labelMedium: base(
+        fontSize: 13,
+        weight: FontWeight.w600,
+        height: 1.25,
+        color: secondary,
+      ),
+      labelSmall: base(
+        fontSize: 11,
+        weight: FontWeight.w600,
+        height: 1.2,
+        letterSpacing: 0.2,
+        color: secondary,
       ),
     );
   }

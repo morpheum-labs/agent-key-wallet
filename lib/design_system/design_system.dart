@@ -1,6 +1,8 @@
 export 'blurs.dart';
 export 'colors.dart';
 export 'gradients.dart';
+export 'radius.dart';
+export 'shadows.dart';
 export 'spacing.dart';
 export 'theme.dart';
 export 'theme_extension.dart';

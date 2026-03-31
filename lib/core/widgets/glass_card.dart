@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../design_system/blurs.dart';
 import '../../design_system/colors.dart';
+import '../../design_system/radius.dart';
 
 /// Frosted panel with subtle border — Rainbow-style glass.
 class GlassCard extends StatelessWidget {
@@ -11,7 +12,7 @@ class GlassCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(20),
-    this.borderRadius = 24,
+    this.borderRadius = RainbowRadius.xl,
   });
 
   final Widget child;
