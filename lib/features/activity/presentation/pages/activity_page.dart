@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rainbow_flutter/core/config/wallet_network.dart';
@@ -7,6 +8,7 @@ import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
+import 'package:rainbow_flutter/design_system/components/rainbow_page_title.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
 import 'package:rainbow_flutter/design_system/radius.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
@@ -30,6 +32,7 @@ class ActivityPage extends StatelessWidget {
             backgroundColor: AppColors.background,
             body: WalletFlowBackground(
               orbAccent: AppColors.accentGreen,
+              showHeroGlows: true,
               child: const SafeArea(
                 child: Center(child: Text('Sign in to see activity')),
               ),
@@ -43,19 +46,33 @@ class ActivityPage extends StatelessWidget {
             backgroundColor: AppColors.background,
             body: WalletFlowBackground(
               orbAccent: AppColors.accentGreen,
+              showHeroGlows: true,
               child: SafeArea(
                 child: Padding(
                   padding: EdgeInsets.all(RainbowSpacing.xxl.w),
-                  child: GlassCard(
-                    padding: EdgeInsets.all(RainbowSpacing.xl.w),
-                    child: Text(
-                      'Transaction history is available on Ethereum (mainnet or Sepolia) in this build. '
-                      'Switch network in Profile.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.labelSecondary,
-                            height: 1.45,
-                          ),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const RainbowPageTitle(title: 'Activity')
+                          .animate()
+                          .fadeIn(duration: 380.ms, curve: Curves.easeOutCubic)
+                          .slideX(begin: -0.02, end: 0),
+                      SizedBox(height: RainbowSpacing.lg.h),
+                      GlassCard(
+                        padding: EdgeInsets.all(RainbowSpacing.xl.w),
+                        child: Text(
+                          'Transaction history is available on Ethereum (mainnet or Sepolia) in this build. '
+                          'Switch network in Profile.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppColors.labelSecondary,
+                                height: 1.45,
+                              ),
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(delay: 80.ms, duration: 420.ms)
+                          .moveY(begin: 12, end: 0, curve: Curves.easeOutCubic),
+                    ],
                   ),
                 ),
               ),
@@ -105,35 +122,17 @@ class _ActivityTxListState extends State<_ActivityTxList> {
       backgroundColor: AppColors.background,
       body: WalletFlowBackground(
         orbAccent: AppColors.accentGreen,
+        showHeroGlows: true,
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 3.w,
-                      height: 20.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(RainbowRadius.full),
-                        gradient: RainbowGradients.accentRibbon(),
-                      ),
-                    ),
-                    SizedBox(width: RainbowSpacing.sm.w),
-                    Expanded(
-                      child: Text(
-                        'Activity',
-                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                              fontSize: 32.sp,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.8,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: const RainbowPageTitle(title: 'Activity')
+                    .animate()
+                    .fadeIn(duration: 380.ms, curve: Curves.easeOutCubic)
+                    .slideX(begin: -0.02, end: 0),
               ),
               SizedBox(height: RainbowSpacing.sm.h),
               Padding(
@@ -145,7 +144,9 @@ class _ActivityTxListState extends State<_ActivityTxList> {
                         color: AppColors.labelSecondary,
                         height: 1.45,
                       ),
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 60.ms, duration: 360.ms),
               ),
               SizedBox(height: RainbowSpacing.md.h),
               Expanded(
@@ -217,7 +218,10 @@ class _ActivityTxListState extends State<_ActivityTxList> {
                                   ),
                                 ],
                               ),
-                            ),
+                            )
+                                .animate()
+                                .fadeIn(duration: 420.ms)
+                                .scale(begin: const Offset(0.98, 0.98), curve: Curves.easeOutBack),
                           ],
                         );
                       }
@@ -240,7 +244,20 @@ class _ActivityTxListState extends State<_ActivityTxList> {
                             item: t,
                             symbol: net.nativeSymbol,
                             explorerTxUrl: net.txExplorerUrl(t.hash),
-                          );
+                          )
+                              .animate()
+                              .fadeIn(
+                                delay: (32 * i).ms,
+                                duration: 320.ms,
+                                curve: Curves.easeOutCubic,
+                              )
+                              .slideX(
+                                begin: 0.03,
+                                end: 0,
+                                delay: (32 * i).ms,
+                                duration: 380.ms,
+                                curve: Curves.easeOutCubic,
+                              );
                         },
                       );
                     },

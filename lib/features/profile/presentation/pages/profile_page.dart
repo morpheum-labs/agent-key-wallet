@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restart_app/restart_app.dart';
@@ -10,8 +11,7 @@ import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
-import 'package:rainbow_flutter/design_system/gradients.dart';
-import 'package:rainbow_flutter/design_system/radius.dart';
+import 'package:rainbow_flutter/design_system/components/rainbow_page_title.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_event.dart';
@@ -33,6 +33,7 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: AppColors.background,
           body: WalletFlowBackground(
             orbAccent: AppColors.accentPurple,
+            showHeroGlows: true,
             child: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
@@ -40,27 +41,10 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 3.w,
-                          height: 20.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(RainbowRadius.full),
-                            gradient: RainbowGradients.accentRibbon(),
-                          ),
-                        ),
-                        SizedBox(width: RainbowSpacing.sm.w),
-                        Text(
-                          'Profile',
-                          style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                fontSize: 32.sp,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.8,
-                              ),
-                        ),
-                      ],
-                    ),
+                    const RainbowPageTitle(title: 'Profile')
+                        .animate()
+                        .fadeIn(duration: 380.ms, curve: Curves.easeOutCubic)
+                        .slideX(begin: -0.02, end: 0),
                     SizedBox(height: RainbowSpacing.xxl.h),
                     GlassCard(
                       padding: EdgeInsets.all(RainbowSpacing.xl.w),
@@ -85,7 +69,10 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 80.ms, duration: 420.ms)
+                        .moveY(begin: 14, end: 0, curve: Curves.easeOutCubic),
                     SizedBox(height: RainbowSpacing.lg.h),
                     Text(
                       'Network',
@@ -93,7 +80,9 @@ class ProfilePage extends StatelessWidget {
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w700,
                           ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 120.ms, duration: 360.ms),
                     SizedBox(height: RainbowSpacing.sm.h),
                     Text(
                       'Balance, send, and receive follow the active network. The app restarts after you switch.',
@@ -102,7 +91,9 @@ class ProfilePage extends StatelessWidget {
                             color: AppColors.labelSecondary,
                             height: 1.45,
                           ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 140.ms, duration: 360.ms),
                     SizedBox(height: RainbowSpacing.md.h),
                     GlassCard(
                       padding: EdgeInsets.symmetric(vertical: RainbowSpacing.xs.h),
@@ -135,7 +126,10 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ).toList(),
                       ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 160.ms, duration: 450.ms)
+                        .moveY(begin: 12, end: 0, curve: Curves.easeOutBack),
                     SizedBox(height: RainbowSpacing.xxl.h),
                     PrimaryButton(
                       label: 'Log out',
@@ -143,7 +137,10 @@ class ProfilePage extends StatelessWidget {
                       onPressed: () => context.read<AuthBloc>().add(
                             const AuthLogoutRequested(),
                           ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 200.ms, duration: 400.ms)
+                        .slideY(begin: 0.06, end: 0, curve: Curves.easeOutCubic),
                     SizedBox(height: RainbowSpacing.xxl.h),
                   ],
                 ),

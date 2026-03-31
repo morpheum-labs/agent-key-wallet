@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
-import 'package:rainbow_flutter/design_system/gradients.dart';
-import 'package:rainbow_flutter/design_system/radius.dart';
+import 'package:rainbow_flutter/design_system/components/rainbow_page_title.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 
 class DiscoverPage extends StatelessWidget {
@@ -17,6 +17,7 @@ class DiscoverPage extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: WalletFlowBackground(
         orbAccent: AppColors.accentBlue,
+        showHeroGlows: true,
         child: SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
@@ -24,27 +25,10 @@ class DiscoverPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 3.w,
-                      height: 20.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(RainbowRadius.full),
-                        gradient: RainbowGradients.accentRibbon(),
-                      ),
-                    ),
-                    SizedBox(width: RainbowSpacing.sm.w),
-                    Text(
-                      'Discover',
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                            fontSize: 32.sp,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.8,
-                          ),
-                    ),
-                  ],
-                ),
+                const RainbowPageTitle(title: 'Discover')
+                    .animate()
+                    .fadeIn(duration: 380.ms, curve: Curves.easeOutCubic)
+                    .slideX(begin: -0.02, end: 0),
                 SizedBox(height: RainbowSpacing.md.h),
                 Text(
                   'Browse dapps and featured drops — wallet connect flows ship next.',
@@ -53,7 +37,9 @@ class DiscoverPage extends StatelessWidget {
                         color: AppColors.labelSecondary,
                         height: 1.45,
                       ),
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 70.ms, duration: 380.ms),
                 SizedBox(height: RainbowSpacing.xxl.h),
                 GlassCard(
                   padding: EdgeInsets.all(RainbowSpacing.xl.w),
@@ -88,7 +74,10 @@ class DiscoverPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 100.ms, duration: 450.ms, curve: Curves.easeOutCubic)
+                    .moveY(begin: 16, end: 0, curve: Curves.easeOutBack),
                 SizedBox(height: RainbowSpacing.xxl.h),
               ],
             ),
