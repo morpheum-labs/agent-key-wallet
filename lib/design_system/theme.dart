@@ -97,15 +97,15 @@ abstract final class RainbowAppTheme {
         backgroundColor: Colors.transparent,
         elevation: 0,
         indicatorColor: AppColors.accent.withValues(alpha: 0.22),
-        iconTheme: WidgetStateProperty.resolveWith((states) {
-          final selected = states.contains(WidgetState.selected);
+        iconTheme: MaterialStateProperty.resolveWith((states) {
+          final selected = states.contains(MaterialState.selected);
           return IconThemeData(
             color: selected ? AppColors.accent : AppColors.labelSecondary,
             size: 24,
           );
         }),
-        labelTextStyle: WidgetStateProperty.resolveWith((states) {
-          final selected = states.contains(WidgetState.selected);
+        labelTextStyle: MaterialStateProperty.resolveWith((states) {
+          final selected = states.contains(MaterialState.selected);
           return (selected ? base.labelSmall?.copyWith(fontWeight: FontWeight.w600) : base.labelSmall)
               ?.copyWith(color: selected ? AppColors.label : AppColors.labelSecondary);
         }),
@@ -215,7 +215,6 @@ abstract final class RainbowAppTheme {
           borderRadius: BorderRadius.circular(RainbowRadius.xs),
         ),
         side: const BorderSide(color: AppColors.borderGlass),
-        brightness: Brightness.dark,
       ),
       tabBarTheme: TabBarThemeData(
         labelColor: AppColors.label,
