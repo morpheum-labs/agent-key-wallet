@@ -37,7 +37,7 @@ class WalletRepositoryImpl implements WalletRepository {
   @override
   Future<void> savePrivateKeyWallet(String privateKeyHex) async {
     try {
-      await EthereumWalletDerivation.addressFromPrivateKeyHex(privateKeyHex);
+      EthereumWalletDerivation.addressHexFromPrivateKeyHex(privateKeyHex);
     } catch (_) {
       throw const ValidationFailure('Invalid private key');
     }
@@ -52,13 +52,13 @@ class WalletRepositoryImpl implements WalletRepository {
   Future<WalletSummary> loadWalletSummary() async {
     final mnemonic = await _mnemonic.readMnemonic();
     if (mnemonic != null && mnemonic.isNotEmpty) {
-      final addr = await EthereumWalletDerivation.addressFromMnemonic(mnemonic);
-      return WalletSummary(ethereumAddressHex: addr.hex);
+      final addr = EthereumWalletDerivation.addressHexFromMnemonic(mnemonic);
+      return WalletSummary(ethereumAddressHex: addr);
     }
     final pk = await _pk.readPrivateKey();
     if (pk != null && pk.isNotEmpty) {
-      final addr = await EthereumWalletDerivation.addressFromPrivateKeyHex(pk);
-      return WalletSummary(ethereumAddressHex: addr.hex);
+      final addr = EthereumWalletDerivation.addressHexFromPrivateKeyHex(pk);
+      return WalletSummary(ethereumAddressHex: addr);
     }
     throw const WalletFailure('No wallet found');
   }

@@ -35,10 +35,6 @@ GoRouter createAppRouter({
         if (path == '/home') return '/onboarding';
         return null;
       }
-      if (s is AuthError) {
-        if (path != '/onboarding') return '/onboarding';
-        return null;
-      }
       return null;
     },
     routes: [

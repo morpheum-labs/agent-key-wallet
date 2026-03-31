@@ -7,7 +7,7 @@ import '../../../../core/config/app_constants.dart';
 
 /// Derives the default Ethereum account (BIP44 path) from a BIP39 mnemonic.
 abstract final class EthereumWalletDerivation {
-  static Future<EthereumAddress> addressFromMnemonic(String mnemonic) async {
+  static String addressHexFromMnemonic(String mnemonic) {
     if (!bip39.validateMnemonic(mnemonic)) {
       throw ArgumentError('Invalid mnemonic');
     }
@@ -20,15 +20,15 @@ abstract final class EthereumWalletDerivation {
     }
     final hexKey = bytesToHex(pk, include0x: true);
     final ethKey = EthPrivateKey.fromHex(hexKey);
-    return ethKey.extractAddress();
+    return ethKey.address.eip55With0x;
   }
 
-  static Future<EthereumAddress> addressFromPrivateKeyHex(String hex) async {
+  static String addressHexFromPrivateKeyHex(String hex) {
     final normalized = hex.startsWith('0x') ? hex : '0x$hex';
     if (normalized.length != 66) {
       throw ArgumentError('Private key must be 32 bytes (64 hex chars)');
     }
     final key = EthPrivateKey.fromHex(normalized);
-    return key.extractAddress();
+    return key.address.eip55With0x;
   }
 }

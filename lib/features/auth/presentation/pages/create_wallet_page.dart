@@ -106,16 +106,35 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                   curve: Curves.easeOutCubic,
                 ),
             const SizedBox(height: 20),
-            CheckboxListTile(
-              value: _confirmed,
-              onChanged: (v) => setState(() => _confirmed = v ?? false),
-              activeColor: AppColors.accent,
-              title: const Text(
-                'I have saved my recovery phrase in a safe place',
-                style: TextStyle(fontSize: 14),
+            Theme(
+              data: Theme.of(context).copyWith(
+                checkboxTheme: CheckboxThemeData(
+                  fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return AppColors.accent;
+                    }
+                    return null;
+                  }),
+                ),
               ),
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    value: _confirmed,
+                    onChanged: (v) => setState(() => _confirmed = v ?? false),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        'I have saved my recovery phrase in a safe place',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             PrimaryButton(
