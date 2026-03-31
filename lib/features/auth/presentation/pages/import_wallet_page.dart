@@ -6,7 +6,6 @@ import 'package:rainbow_flutter/core/theme/app_colors.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
-import 'package:rainbow_flutter/design_system/radius.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_event.dart';
