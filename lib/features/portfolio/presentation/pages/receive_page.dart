@@ -5,8 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
-import 'package:rainbow_flutter/core/di/injection.dart';
+import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
@@ -46,7 +45,7 @@ class ReceivePage extends StatelessWidget {
                       children: [
                         SizedBox(height: RainbowSpacing.lg.h),
                         Text(
-                          'Send only ETH and ERC-20 tokens on ${getIt<ChainSettingsRepository>().selectedSync.name} to this address.',
+                          'Send only ETH and ERC-20 tokens on ${AppLocator.chain.name} to this address.',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontSize: 15.sp,
                                 color: AppColors.labelSecondary,

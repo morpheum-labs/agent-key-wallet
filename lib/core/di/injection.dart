@@ -13,6 +13,7 @@ import 'package:rainbow_flutter/features/portfolio/data/datasources/erc20_balanc
 import 'package:rainbow_flutter/features/portfolio/data/datasources/eth_balance_remote_datasource.dart';
 import 'package:rainbow_flutter/features/portfolio/domain/usecases/fetch_erc20_balance_usecase.dart';
 import 'package:rainbow_flutter/features/portfolio/domain/usecases/fetch_eth_balance_usecase.dart';
+import 'package:rainbow_flutter/features/portfolio/domain/usecases/fetch_wallet_balances_usecase.dart';
 import 'package:rainbow_flutter/features/portfolio/domain/usecases/send_eth_usecase.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -61,6 +62,9 @@ Future<void> configureDependencies() async {
   );
   getIt.registerLazySingleton<FetchErc20BalanceUseCase>(
     () => FetchErc20BalanceUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<FetchWalletBalancesUseCase>(
+    () => FetchWalletBalancesUseCase(getIt(), getIt(), getIt()),
   );
   getIt.registerLazySingleton<SendEthUseCase>(
     () => SendEthUseCase(getIt(), getIt()),

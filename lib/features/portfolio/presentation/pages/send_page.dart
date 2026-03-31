@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
 import 'package:rainbow_flutter/core/di/injection.dart';
+import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/error/failures.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
@@ -41,7 +41,7 @@ class _SendPageState extends State<SendPage> {
         amountEthString: _amountController.text,
       );
       if (!mounted) return;
-      final explorerUrl = getIt<ChainSettingsRepository>().selectedSync.txExplorerUrl(hash);
+      final explorerUrl = AppLocator.chain.txExplorerUrl(hash);
       await showDialog<void>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -107,7 +107,7 @@ class _SendPageState extends State<SendPage> {
             children: [
               SizedBox(height: RainbowSpacing.lg.h),
               Text(
-                'Send native ETH on ${getIt<ChainSettingsRepository>().selectedSync.name} (same RPC as balance). Gas is paid in ETH.',
+                'Send native ETH on ${AppLocator.chain.name} (same RPC as balance). Gas is paid in ETH.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: 14.sp,
                       color: AppColors.labelSecondary,

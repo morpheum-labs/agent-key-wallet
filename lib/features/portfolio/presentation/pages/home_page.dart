@@ -3,21 +3,18 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rainbow_flutter/core/config/token_contracts.dart';
-import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
-import 'package:rainbow_flutter/core/di/injection.dart';
+import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
+import 'package:rainbow_flutter/core/widgets/rainbow_hero_glows.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
-import 'package:rainbow_flutter/design_system/gradients.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_state.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/data/mock_portfolio_tokens.dart';
-import 'package:rainbow_flutter/features/portfolio/presentation/utils/eth_balance_ui.dart';
-import 'package:rainbow_flutter/features/portfolio/presentation/widgets/erc20_balance_future_builder.dart';
-import 'package:rainbow_flutter/features/portfolio/presentation/widgets/eth_balance_future_builder.dart';
+import 'package:rainbow_flutter/features/portfolio/presentation/mappers/portfolio_token_mapper.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/token_list_tile.dart';
+import 'package:rainbow_flutter/features/portfolio/presentation/widgets/wallet_balances_future_builder.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,22 +27,18 @@ class HomePage extends StatelessWidget {
           return const Scaffold(body: SizedBox.shrink());
         }
         final address = state.summary.ethereumAddressHex;
-        final chain = getIt<ChainSettingsRepository>().selectedSync;
+        final chain = AppLocator.chain;
         final base = mockPortfolioTokens(chain);
 
-        return EthBalanceFutureBuilder(
+        return WalletBalancesFutureBuilder(
           address: address,
-          builder: (context, ethSnap) {
-            return Erc20BalanceFutureBuilder(
-              contractAddress: TokenContracts.usdcAddressForChain(chain.chainId),
-              holderAddress: address,
-              builder: (context, usdcSnap) {
-                final tokens = applyEthAndUsdcSnapshots(base, ethSnap, usdcSnap);
+          builder: (context, snap) {
+            final tokens = portfolioTokenMapper.mapHomeRows(base, snap);
 
-                return Scaffold(
+            return Scaffold(
               body: Stack(
                 children: [
-                  const _HeroGlows(),
+                  const RainbowHeroGlows(),
                   SafeArea(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -84,7 +77,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: RainbowSpacing.sm.h),
                                 Text(
-                                  ethBalanceHeadline(ethSnap),
+                                  portfolioTokenMapper.ethHeadline(snap),
                                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                         fontSize: 42.sp,
                                         fontWeight: FontWeight.w700,
@@ -93,7 +86,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: RainbowSpacing.xs.h),
                                 Text(
-                                  '${getIt<ChainSettingsRepository>().selectedSync.name} · fiat when price feeds land',
+                                  '${chain.name} · fiat when price feeds land',
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         fontSize: 13.sp,
                                         color: AppColors.labelSecondary,
@@ -162,57 +155,9 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             );
-              },
-            );
           },
         );
       },
-    );
-  }
-}
-
-class _HeroGlows extends StatelessWidget {
-  const _HeroGlows();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          left: -70.w,
-          top: 90.h,
-          child: IgnorePointer(
-            child: Container(
-              width: 260.w,
-              height: 260.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RainbowGradients.radialGlow(
-                  AppColors.accentSecondary,
-                  opacity: 0.32,
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: -50.w,
-          top: 200.h,
-          child: IgnorePointer(
-            child: Container(
-              width: 200.w,
-              height: 200.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RainbowGradients.radialGlow(
-                  AppColors.accentPurple,
-                  opacity: 0.22,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

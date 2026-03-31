@@ -4,8 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restart_app/restart_app.dart';
 
 import 'package:rainbow_flutter/core/config/chain_config.dart';
-import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
-import 'package:rainbow_flutter/core/di/injection.dart';
+import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
@@ -19,7 +18,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chainRepo = getIt<ChainSettingsRepository>();
+    final chainRepo = AppLocator.chainSettings;
     final selectedId = chainRepo.readChainIdSync();
 
     return BlocBuilder<AuthBloc, AuthState>(
