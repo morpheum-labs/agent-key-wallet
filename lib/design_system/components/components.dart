@@ -1,4 +1,5 @@
 export 'rainbow_balance_hero.dart';
+export 'rainbow_bottom_sheet.dart';
 export 'rainbow_bottom_tab_bar.dart';
 export 'rainbow_card.dart';
 export 'rainbow_mini_sparkline.dart';

@@ -19,6 +19,7 @@ import 'package:rainbow_flutter/features/portfolio/presentation/mappers/portfoli
 import 'package:rainbow_flutter/features/portfolio/presentation/utils/format_token_units.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/erc20_balance_future_builder.dart';
 import 'package:rainbow_flutter/features/portfolio/presentation/widgets/eth_balance_future_builder.dart';
+import 'package:rainbow_flutter/features/portfolio/presentation/widgets/wallet_sheet_helpers.dart';
 
 class TokenDetailPage extends StatelessWidget {
   const TokenDetailPage({
@@ -202,7 +203,7 @@ class TokenDetailPage extends StatelessWidget {
                             child: PrimaryButton(
                               label: 'Receive',
                               icon: Icons.south_west_rounded,
-                              onPressed: () => context.push('/wallet/receive'),
+                              onPressed: () => showWalletReceiveSheet(context),
                             ),
                           ),
                           SizedBox(width: RainbowSpacing.md.w),
@@ -210,7 +211,7 @@ class TokenDetailPage extends StatelessWidget {
                             child: PrimaryButton(
                               label: 'Send',
                               icon: Icons.north_east_rounded,
-                              onPressed: () => context.push('/wallet/send'),
+                              onPressed: () => showWalletSendSheet(context),
                             ),
                           ),
                         ],
