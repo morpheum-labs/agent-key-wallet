@@ -64,60 +64,65 @@ class RainbowShell extends StatelessWidget {
                             onTap: () => navigationShell.goBranch(i),
                             splashColor: AppColors.accent.withValues(alpha: 0.12),
                             child: Center(
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 240),
-                                curve: Curves.easeOutCubic,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 6.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(RainbowRadius.full),
-                                  gradient: i == idx
-                                      ? LinearGradient(
-                                          colors: [
-                                            AppColors.accent.withValues(alpha: 0.22),
-                                            AppColors.accentSecondary.withValues(alpha: 0.12),
-                                          ],
-                                        )
-                                      : null,
-                                  border: Border.all(
-                                    color: i == idx
-                                        ? AppColors.accent.withValues(alpha: 0.35)
-                                        : Colors.transparent,
+                              child: AnimatedScale(
+                                scale: i == idx ? 1.06 : 1.0,
+                                duration: const Duration(milliseconds: 520),
+                                curve: Curves.elasticOut,
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 260),
+                                  curve: Curves.easeOutCubic,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 6.h,
                                   ),
-                                  boxShadow: i == idx
-                                      ? [
-                                          BoxShadow(
-                                            color: AppColors.accent.withValues(alpha: 0.2),
-                                            blurRadius: 14,
-                                            spreadRadius: -2,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ]
-                                      : null,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      _tabs[i].icon,
-                                      size: 22.sp,
-                                      color: i == idx ? AppColors.accent : AppColors.labelSecondary,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(RainbowRadius.full),
+                                    gradient: i == idx
+                                        ? LinearGradient(
+                                            colors: [
+                                              AppColors.accent.withValues(alpha: 0.22),
+                                              AppColors.accentSecondary.withValues(alpha: 0.12),
+                                            ],
+                                          )
+                                        : null,
+                                    border: Border.all(
+                                      color: i == idx
+                                          ? AppColors.accent.withValues(alpha: 0.35)
+                                          : Colors.transparent,
                                     ),
-                                    SizedBox(height: 2.h),
-                                    Text(
-                                      _tabs[i].label,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            fontSize: 10.sp,
-                                            fontWeight: i == idx ? FontWeight.w700 : FontWeight.w500,
-                                            color: i == idx ? AppColors.label : AppColors.labelSecondary,
-                                          ),
-                                    ),
-                                  ],
+                                    boxShadow: i == idx
+                                        ? [
+                                            BoxShadow(
+                                              color: AppColors.accent.withValues(alpha: 0.2),
+                                              blurRadius: 14,
+                                              spreadRadius: -2,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ]
+                                        : null,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        _tabs[i].icon,
+                                        size: 22.sp,
+                                        color: i == idx ? AppColors.accent : AppColors.labelSecondary,
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Text(
+                                        _tabs[i].label,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                              fontSize: 10.sp,
+                                              fontWeight: i == idx ? FontWeight.w700 : FontWeight.w500,
+                                              color: i == idx ? AppColors.label : AppColors.labelSecondary,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
