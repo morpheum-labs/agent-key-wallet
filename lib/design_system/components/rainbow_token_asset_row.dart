@@ -145,6 +145,9 @@ class RainbowTokenAssetRow extends StatelessWidget {
   }
 }
 
+/// Alias for docs / parity with Rainbow naming — same widget as [RainbowTokenAssetRow].
+typedef RainbowTokenRow = RainbowTokenAssetRow;
+
 Color _percentColor(String label, bool positive) {
   if (label == '—' || label == '--') {
     return AppColors.labelSecondary;

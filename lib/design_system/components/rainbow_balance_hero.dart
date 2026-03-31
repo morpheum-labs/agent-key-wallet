@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:rainbow_flutter/design_system/colors.dart';
+import 'package:rainbow_flutter/design_system/gradients.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 
 /// Large centered balance: numeric [balanceText] values tween with an elastic curve;
@@ -21,6 +22,9 @@ class RainbowBalanceHero extends StatefulWidget {
   @override
   State<RainbowBalanceHero> createState() => _RainbowBalanceHeroState();
 }
+
+/// Alias for docs / parity with Rainbow naming — same widget as [RainbowBalanceHero].
+typedef RainbowBalanceHeader = RainbowBalanceHero;
 
 class _RainbowBalanceHeroState extends State<RainbowBalanceHero> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
@@ -77,6 +81,14 @@ class _RainbowBalanceHeroState extends State<RainbowBalanceHero> with SingleTick
     final textTheme = Theme.of(context).textTheme;
     final parsed = _parseAmount(widget.balanceText);
 
+    final balanceStyle = textTheme.displayLarge?.copyWith(
+      fontSize: 48.sp,
+      fontWeight: FontWeight.w800,
+      letterSpacing: -1.2,
+      height: 1.02,
+      color: Colors.white,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -93,24 +105,16 @@ class _RainbowBalanceHeroState extends State<RainbowBalanceHero> with SingleTick
         if (parsed == null || _amountAnimation == null)
           _SwitcherBalance(
             balanceText: widget.balanceText,
-            textTheme: textTheme,
+            balanceStyle: balanceStyle,
           )
         else
           AnimatedBuilder(
             animation: _amountAnimation!,
             builder: (context, _) {
               final formatted = _formatAnimatedAmount(_amountAnimation!.value);
-              return Text(
-                '$formatted $_symbol',
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.displayLarge?.copyWith(
-                  fontSize: 44.sp,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -1.2,
-                  height: 1.02,
-                ),
+              return _GradientBalanceText(
+                text: '$formatted $_symbol',
+                style: balanceStyle,
               );
             },
           ),
@@ -131,11 +135,11 @@ class _RainbowBalanceHeroState extends State<RainbowBalanceHero> with SingleTick
 class _SwitcherBalance extends StatelessWidget {
   const _SwitcherBalance({
     required this.balanceText,
-    required this.textTheme,
+    required this.balanceStyle,
   });
 
   final String balanceText;
-  final TextTheme textTheme;
+  final TextStyle? balanceStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -154,18 +158,37 @@ class _SwitcherBalance extends StatelessWidget {
           ),
         );
       },
-      child: Text(
-        balanceText,
+      child: _GradientBalanceText(
         key: ValueKey<String>(balanceText),
+        text: balanceText,
+        style: balanceStyle,
+      ),
+    );
+  }
+}
+
+/// Large balance digits with semantic accent gradient (Rainbow-style).
+class _GradientBalanceText extends StatelessWidget {
+  const _GradientBalanceText({
+    super.key,
+    required this.text,
+    required this.style,
+  });
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) => RainbowGradients.accentRibbon().createShader(bounds),
+      child: Text(
+        text,
         textAlign: TextAlign.center,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: textTheme.displayLarge?.copyWith(
-          fontSize: 44.sp,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -1.2,
-          height: 1.02,
-        ),
+        style: style,
       ),
     );
   }

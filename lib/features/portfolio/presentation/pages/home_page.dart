@@ -7,11 +7,11 @@ import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/rainbow_hero_glows.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_balance_hero.dart';
-import 'package:rainbow_flutter/design_system/components/rainbow_card.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_quick_actions.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_section_title.dart';
 import 'package:rainbow_flutter/design_system/components/rainbow_wallet_header.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
+import 'package:rainbow_flutter/design_system/radius.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:rainbow_flutter/features/auth/presentation/bloc/auth_state.dart';
@@ -119,16 +119,35 @@ class _HomeWalletContentState extends State<_HomeWalletContent> {
                                     .fadeIn(duration: 380.ms, curve: Curves.easeOutCubic)
                                     .slideX(begin: -0.02, end: 0, curve: Curves.easeOutCubic),
                                 SizedBox(height: RainbowSpacing.xxl.h),
-                                RainbowCard(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: RainbowSpacing.xl.w,
-                                    vertical: RainbowSpacing.xxl.h,
+                                Center(
+                                  child: Container(
+                                    width: 52.w,
+                                    height: 4.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(RainbowRadius.full),
+                                      gradient: RainbowGradients.accentRibbon(),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.accent.withValues(alpha: 0.45),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: RainbowBalanceHero(
-                                    caption: 'Total balance',
-                                    balanceText: headline,
-                                    footer: '${network.name} · fiat when price feeds land',
-                                  ),
+                                )
+                                    .animate()
+                                    .fadeIn(duration: 320.ms, curve: Curves.easeOutCubic)
+                                    .scale(
+                                      begin: const Offset(0.85, 1),
+                                      end: const Offset(1, 1),
+                                      curve: Curves.elasticOut,
+                                    ),
+                                SizedBox(height: RainbowSpacing.xl.h),
+                                RainbowBalanceHero(
+                                  caption: 'Total balance',
+                                  balanceText: headline,
+                                  footer: '${network.name} · fiat when price feeds land',
                                 )
                                     .animate()
                                     .fadeIn(duration: 450.ms, curve: Curves.easeOutCubic)

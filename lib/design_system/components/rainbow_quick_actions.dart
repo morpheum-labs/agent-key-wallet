@@ -25,24 +25,37 @@ class RainbowQuickActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: PrimaryButton(
-                label: 'Receive',
-                icon: Icons.south_west_rounded,
-                onPressed: onReceive,
+        DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(RainbowRadius.lg),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.35),
+                blurRadius: 28,
+                spreadRadius: -4,
+                offset: const Offset(0, 16),
               ),
-            ),
-            SizedBox(width: RainbowSpacing.md.w),
-            Expanded(
-              child: PrimaryButton(
-                label: 'Send',
-                icon: Icons.north_east_rounded,
-                onPressed: onSend,
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: PrimaryButton(
+                  label: 'Receive',
+                  icon: Icons.south_west_rounded,
+                  onPressed: onReceive,
+                ),
               ),
-            ),
-          ],
+              SizedBox(width: RainbowSpacing.md.w),
+              Expanded(
+                child: PrimaryButton(
+                  label: 'Send',
+                  icon: Icons.north_east_rounded,
+                  onPressed: onSend,
+                ),
+              ),
+            ],
+          ),
         ),
         if (onSwap != null) ...[
           SizedBox(height: RainbowSpacing.md.h),
