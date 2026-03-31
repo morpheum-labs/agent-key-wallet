@@ -14,6 +14,8 @@ class TokenAsset extends Equatable {
     required this.accentColor,
     this.erc20ContractAddress,
     this.unitDecimals = 18,
+    this.percentChange24h,
+    this.sparklinePoints,
   });
 
   final String symbol;
@@ -28,6 +30,12 @@ class TokenAsset extends Equatable {
   /// ERC-20 decimals for formatting (ETH native uses 18 for display only).
   final int unitDecimals;
 
+  /// Mock / API: 24h % change (e.g. +2.35).
+  final double? percentChange24h;
+
+  /// Normalized 0..1 samples for sparkline (oldest → newest).
+  final List<double>? sparklinePoints;
+
   /// URL segment for [GoRouter], e.g. `eth` → `/wallet/token/eth`.
   String get routeSlug => symbol.toLowerCase();
 
@@ -39,6 +47,8 @@ class TokenAsset extends Equatable {
     Color? accentColor,
     String? erc20ContractAddress,
     int? unitDecimals,
+    double? percentChange24h,
+    List<double>? sparklinePoints,
   }) {
     return TokenAsset(
       symbol: symbol ?? this.symbol,
@@ -48,6 +58,8 @@ class TokenAsset extends Equatable {
       accentColor: accentColor ?? this.accentColor,
       erc20ContractAddress: erc20ContractAddress ?? this.erc20ContractAddress,
       unitDecimals: unitDecimals ?? this.unitDecimals,
+      percentChange24h: percentChange24h ?? this.percentChange24h,
+      sparklinePoints: sparklinePoints ?? this.sparklinePoints,
     );
   }
 
@@ -60,5 +72,7 @@ class TokenAsset extends Equatable {
         accentColor,
         erc20ContractAddress,
         unitDecimals,
+        percentChange24h,
+        sparklinePoints,
       ];
 }

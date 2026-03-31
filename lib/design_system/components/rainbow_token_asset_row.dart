@@ -17,6 +17,7 @@ class RainbowTokenAssetRow extends StatelessWidget {
     this.percentLabel,
     this.showSparkline = true,
     this.sparklineSeed = 0,
+    this.sparklineValues,
     this.percentIsPositive,
     required this.onTap,
   });
@@ -28,6 +29,7 @@ class RainbowTokenAssetRow extends StatelessWidget {
   final String? percentLabel;
   final bool showSparkline;
   final int sparklineSeed;
+  final List<double>? sparklineValues;
   final bool? percentIsPositive;
   final VoidCallback onTap;
 
@@ -97,7 +99,11 @@ class RainbowTokenAssetRow extends StatelessWidget {
                   ),
                 ),
                 if (showSparkline) ...[
-                  RainbowMiniSparkline(seed: sparklineSeed, isPositive: positive),
+                  RainbowMiniSparkline(
+                    seed: sparklineSeed,
+                    isPositive: positive,
+                    values: sparklineValues,
+                  ),
                   SizedBox(width: RainbowSpacing.sm.w),
                 ],
                 Column(
