@@ -5,29 +5,30 @@ import 'package:rainbow_flutter/features/portfolio/presentation/utils/format_eth
 import 'package:rainbow_flutter/features/portfolio/presentation/utils/format_token_units.dart';
 import 'package:web3dart/web3dart.dart';
 
-/// Maps [PortfolioBalances] / ETH snapshots to [TokenAsset] rows (single place for UI rules).
+/// Maps [PortfolioBalances] / native EVM snapshots to [TokenAsset] rows (single place for UI rules).
 final portfolioTokenMapper = PortfolioTokenMapper();
 
 final class PortfolioTokenMapper {
   List<TokenAsset> mapHomeRows(
     List<TokenAsset> base,
     AsyncSnapshot<PortfolioBalances> snapshot,
+    String nativeSymbol,
   ) {
     if (snapshot.hasError) {
-      return _mapErrorRows(base);
+      return _mapErrorRows(base, nativeSymbol);
     }
     if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-      return _mapLoadingRows(base);
+      return _mapLoadingRows(base, nativeSymbol);
     }
     if (snapshot.hasData) {
-      return _mapDataRows(base, snapshot.data!);
+      return _mapDataRows(base, snapshot.data!, nativeSymbol);
     }
     return base;
   }
 
-  List<TokenAsset> _mapErrorRows(List<TokenAsset> base) {
+  List<TokenAsset> _mapErrorRows(List<TokenAsset> base, String nativeSymbol) {
     return base.map((t) {
-      if (t.symbol == 'ETH') {
+      if (t.symbol == nativeSymbol) {
         return t.copyWith(balanceDisplay: '—', fiatDisplay: r'$—');
       }
       if (t.symbol == 'USDC' && _hasUsdcContract(t)) {
@@ -37,9 +38,9 @@ final class PortfolioTokenMapper {
     }).toList();
   }
 
-  List<TokenAsset> _mapLoadingRows(List<TokenAsset> base) {
+  List<TokenAsset> _mapLoadingRows(List<TokenAsset> base, String nativeSymbol) {
     return base.map((t) {
-      if (t.symbol == 'ETH') {
+      if (t.symbol == nativeSymbol) {
         return t.copyWith(balanceDisplay: '…', fiatDisplay: r'$—');
       }
       if (t.symbol == 'USDC' && _hasUsdcContract(t)) {
@@ -49,11 +50,18 @@ final class PortfolioTokenMapper {
     }).toList();
   }
 
-  List<TokenAsset> _mapDataRows(List<TokenAsset> base, PortfolioBalances b) {
+  List<TokenAsset> _mapDataRows(
+    List<TokenAsset> base,
+    PortfolioBalances b,
+    String nativeSymbol,
+  ) {
     return base.map((t) {
-      if (t.symbol == 'ETH') {
+      if (t.symbol == nativeSymbol) {
+        if (b.evmNative == null) {
+          return t.copyWith(balanceDisplay: '—', fiatDisplay: r'$—');
+        }
         return t.copyWith(
-          balanceDisplay: formatEtherForUi(b.eth),
+          balanceDisplay: formatEtherForUi(b.evmNative!),
           fiatDisplay: r'$—',
         );
       }
@@ -76,13 +84,14 @@ final class PortfolioTokenMapper {
   bool _hasUsdcContract(TokenAsset t) =>
       t.erc20ContractAddress != null && t.erc20ContractAddress!.isNotEmpty;
 
-  /// Token detail: ETH row only.
-  List<TokenAsset> mapEthDetailRow(
+  /// Token detail: native row on EVM only (caller gates live fetch).
+  List<TokenAsset> mapNativeEvmDetailRow(
     List<TokenAsset> base,
     AsyncSnapshot<EtherAmount> snapshot,
+    String nativeSymbol,
   ) {
     return base.map((t) {
-      if (t.symbol != 'ETH') return t;
+      if (t.symbol != nativeSymbol) return t;
       if (snapshot.hasError) return t.copyWith(balanceDisplay: '—', fiatDisplay: r'$—');
       if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
         return t.copyWith(balanceDisplay: '…', fiatDisplay: r'$—');
@@ -97,13 +106,17 @@ final class PortfolioTokenMapper {
     }).toList();
   }
 
-  String ethHeadline(AsyncSnapshot<PortfolioBalances> snapshot) {
+  String nativeBalanceHeadline(AsyncSnapshot<PortfolioBalances> snapshot, String nativeSymbol) {
     if (snapshot.hasError) return 'Unavailable';
     if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
       return '…';
     }
     if (snapshot.hasData) {
-      return '${formatEtherForUi(snapshot.data!.eth)} ETH';
+      final b = snapshot.data!;
+      if (b.evmNative != null) {
+        return '${formatEtherForUi(b.evmNative!)} $nativeSymbol';
+      }
+      return '—';
     }
     return '—';
   }

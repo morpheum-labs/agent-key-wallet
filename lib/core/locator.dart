@@ -1,4 +1,4 @@
-import 'package:rainbow_flutter/core/config/chain_config.dart';
+import 'package:rainbow_flutter/core/config/wallet_network.dart';
 import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
 import 'package:rainbow_flutter/core/di/injection.dart';
 
@@ -6,5 +6,6 @@ import 'package:rainbow_flutter/core/di/injection.dart';
 abstract final class AppLocator {
   static ChainSettingsRepository get chainSettings => getIt<ChainSettingsRepository>();
 
-  static ChainConfig get chain => chainSettings.selectedSync;
+  /// Currently selected network (EVM, Solana, Bitcoin, …).
+  static WalletNetwork get network => chainSettings.selectedNetwork;
 }

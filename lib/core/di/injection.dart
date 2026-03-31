@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:rainbow_flutter/core/config/app_constants.dart';
+import 'package:rainbow_flutter/core/config/wallet_network.dart';
 import 'package:rainbow_flutter/core/data/chain_settings_repository.dart';
 import 'package:rainbow_flutter/features/auth/data/datasources/wallet_local_datasource.dart';
 import 'package:rainbow_flutter/features/auth/data/datasources/wallet_private_key_datasource.dart';
@@ -46,10 +47,11 @@ Future<void> configureDependencies() async {
 
   getIt.registerLazySingleton<http.Client>(http.Client.new);
   getIt.registerLazySingleton<Web3Client>(
-    () => Web3Client(
-      getIt<ChainSettingsRepository>().selectedSync.rpcUrl,
-      getIt<http.Client>(),
-    ),
+    () {
+      final net = getIt<ChainSettingsRepository>().selectedNetwork;
+      final rpc = net is EvmWalletNetwork ? net.rpcUrl : EvmWalletNetwork.mainnet.rpcUrl;
+      return Web3Client(rpc, getIt<http.Client>());
+    },
   );
   getIt.registerLazySingleton<EthBalanceRemoteDataSource>(
     () => EthBalanceRemoteDataSource(client: getIt()),

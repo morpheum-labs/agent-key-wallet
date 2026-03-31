@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import 'package:rainbow_flutter/core/config/wallet_network.dart';
 import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
@@ -20,6 +21,8 @@ class ReceivePage extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         final address = state is AuthAuthenticated ? state.summary.ethereumAddressHex : null;
+        final network = AppLocator.network;
+        final evm = network is EvmWalletNetwork ? network : null;
 
         return Scaffold(
           appBar: AppBar(
@@ -40,72 +43,88 @@ class ReceivePage extends StatelessWidget {
                   )
                 : Padding(
                     padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: RainbowSpacing.lg.h),
-                        Text(
-                          'Send only ETH and ERC-20 tokens on ${AppLocator.chain.name} to this address.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 15.sp,
-                                color: AppColors.labelSecondary,
-                              ),
-                        ),
-                        SizedBox(height: RainbowSpacing.xxl.h),
-                        GlassCard(
-                          padding: EdgeInsets.all(RainbowSpacing.xxl.w),
-                          child: Column(
+                    child: evm == null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              QrImageView(
-                                data: address,
-                                version: QrVersions.auto,
-                                size: 200.w,
-                                eyeStyle: const QrEyeStyle(
-                                  eyeShape: QrEyeShape.square,
-                                  color: AppColors.label,
-                                ),
-                                dataModuleStyle: const QrDataModuleStyle(
-                                  dataModuleShape: QrDataModuleShape.square,
-                                  color: AppColors.label,
-                                ),
-                                gapless: true,
-                                backgroundColor: Colors.transparent,
-                              ),
-                              SizedBox(height: RainbowSpacing.xxl.h),
-                              SelectableText(
-                                address,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      fontSize: 14.sp,
-                                      height: 1.4,
+                              SizedBox(height: RainbowSpacing.lg.h),
+                              Text(
+                                'This wallet currently derives an Ethereum-style (EVM) address. '
+                                '${network.name} uses a different address format; wire Solana/Bitcoin '
+                                'derivation and show a separate receive QR when those stacks are added.',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontSize: 15.sp,
+                                      color: AppColors.labelSecondary,
                                     ),
                               ),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
                               SizedBox(height: RainbowSpacing.lg.h),
-                              FilledButton.icon(
-                                onPressed: () async {
-                                  await Clipboard.setData(ClipboardData(text: address));
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Address copied')),
-                                    );
-                                  }
-                                },
-                                icon: const Icon(Icons.copy_rounded),
-                                label: const Text('Copy address'),
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: AppColors.surfaceElevated,
-                                  foregroundColor: AppColors.label,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: RainbowSpacing.md.h,
-                                    horizontal: RainbowSpacing.xl.w,
-                                  ),
+                              Text(
+                                'Send only ${evm.nativeSymbol} and ERC-20 tokens on ${evm.name} to this address.',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontSize: 15.sp,
+                                      color: AppColors.labelSecondary,
+                                    ),
+                              ),
+                              SizedBox(height: RainbowSpacing.xxl.h),
+                              GlassCard(
+                                padding: EdgeInsets.all(RainbowSpacing.xxl.w),
+                                child: Column(
+                                  children: [
+                                    QrImageView(
+                                      data: address,
+                                      version: QrVersions.auto,
+                                      size: 200.w,
+                                      eyeStyle: const QrEyeStyle(
+                                        eyeShape: QrEyeShape.square,
+                                        color: AppColors.label,
+                                      ),
+                                      dataModuleStyle: const QrDataModuleStyle(
+                                        dataModuleShape: QrDataModuleShape.square,
+                                        color: AppColors.label,
+                                      ),
+                                      gapless: true,
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                    SizedBox(height: RainbowSpacing.xxl.h),
+                                    SelectableText(
+                                      address,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                            fontSize: 14.sp,
+                                            height: 1.4,
+                                          ),
+                                    ),
+                                    SizedBox(height: RainbowSpacing.lg.h),
+                                    FilledButton.icon(
+                                      onPressed: () async {
+                                        await Clipboard.setData(ClipboardData(text: address));
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Address copied')),
+                                          );
+                                        }
+                                      },
+                                      icon: const Icon(Icons.copy_rounded),
+                                      label: const Text('Copy address'),
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: AppColors.surfaceElevated,
+                                        foregroundColor: AppColors.label,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: RainbowSpacing.md.h,
+                                          horizontal: RainbowSpacing.xl.w,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
                   ),
           ),
         );

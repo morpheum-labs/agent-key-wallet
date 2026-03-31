@@ -27,13 +27,13 @@ class HomePage extends StatelessWidget {
           return const Scaffold(body: SizedBox.shrink());
         }
         final address = state.summary.ethereumAddressHex;
-        final chain = AppLocator.chain;
-        final base = mockPortfolioTokens(chain);
+        final network = AppLocator.network;
+        final base = mockPortfolioTokens(network);
 
         return WalletBalancesFutureBuilder(
           address: address,
           builder: (context, snap) {
-            final tokens = portfolioTokenMapper.mapHomeRows(base, snap);
+            final tokens = portfolioTokenMapper.mapHomeRows(base, snap, network.nativeSymbol);
 
             return Scaffold(
               body: Stack(
@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: RainbowSpacing.sm.h),
                                 Text(
-                                  portfolioTokenMapper.ethHeadline(snap),
+                                  portfolioTokenMapper.nativeBalanceHeadline(snap, network.nativeSymbol),
                                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                         fontSize: 42.sp,
                                         fontWeight: FontWeight.w700,
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: RainbowSpacing.xs.h),
                                 Text(
-                                  '${chain.name} · fiat when price feeds land',
+                                  '${network.name} · fiat when price feeds land',
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         fontSize: 13.sp,
                                         color: AppColors.labelSecondary,

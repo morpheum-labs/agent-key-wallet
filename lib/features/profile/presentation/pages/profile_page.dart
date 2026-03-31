@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restart_app/restart_app.dart';
 
-import 'package:rainbow_flutter/core/config/chain_config.dart';
+import 'package:rainbow_flutter/core/config/wallet_network.dart';
+import 'package:rainbow_flutter/core/config/wallet_network_registry.dart';
 import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
@@ -19,7 +20,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chainRepo = AppLocator.chainSettings;
-    final selectedId = chainRepo.readChainIdSync();
+    final selectedId = chainRepo.readNetworkIdSync();
 
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
@@ -84,52 +85,35 @@ class ProfilePage extends StatelessWidget {
                       ),
                       SizedBox(height: RainbowSpacing.sm.h),
                       Text(
-                        'Balance, send, and receive use this RPC. The app restarts after you switch.',
+                        'Balance, send, and receive follow the active network family. '
+                        'The app restarts after you switch.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontSize: 13.sp,
                               color: AppColors.labelSecondary,
                             ),
                       ),
                       SizedBox(height: RainbowSpacing.md.h),
-                      RadioListTile<int>(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          ChainConfig.mainnet.name,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                      ...WalletNetworkRegistry.all.map(
+                        (WalletNetwork n) => RadioListTile<String>(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            n.name,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          subtitle: Text(
+                            n.settingsSubtitle,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: AppColors.labelSecondary,
+                                ),
+                          ),
+                          value: n.id,
+                          groupValue: selectedId,
+                          onChanged: (v) async {
+                            if (v == null || v == selectedId) return;
+                            await chainRepo.setNetworkId(v);
+                            Restart.restartApp();
+                          },
                         ),
-                        subtitle: Text(
-                          'Chain ID ${ChainConfig.mainnet.chainId}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.labelSecondary,
-                              ),
-                        ),
-                        value: ChainConfig.mainnet.chainId,
-                        groupValue: selectedId,
-                        onChanged: (v) async {
-                          if (v == null || v == selectedId) return;
-                          await chainRepo.setChainId(v);
-                          Restart.restartApp();
-                        },
-                      ),
-                      RadioListTile<int>(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          ChainConfig.sepolia.name,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        subtitle: Text(
-                          'Chain ID ${ChainConfig.sepolia.chainId} · test ETH only',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.labelSecondary,
-                              ),
-                        ),
-                        value: ChainConfig.sepolia.chainId,
-                        groupValue: selectedId,
-                        onChanged: (v) async {
-                          if (v == null || v == selectedId) return;
-                          await chainRepo.setChainId(v);
-                          Restart.restartApp();
-                        },
                       ),
                       SizedBox(height: RainbowSpacing.xxl.h),
                       PrimaryButton(

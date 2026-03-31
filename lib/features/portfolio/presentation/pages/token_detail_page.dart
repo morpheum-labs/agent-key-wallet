@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:rainbow_flutter/core/config/wallet_network.dart';
 import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
@@ -28,9 +29,9 @@ class TokenDetailPage extends StatelessWidget {
 
   TokenAsset? get _token {
     final upper = symbol.toUpperCase();
-    final chain = AppLocator.chain;
+    final network = AppLocator.network;
     try {
-      return mockPortfolioTokens(chain).firstWhere((t) => t.symbol == upper);
+      return mockPortfolioTokens(network).firstWhere((t) => t.symbol == upper);
     } catch (_) {
       return null;
     }
@@ -39,6 +40,7 @@ class TokenDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final token = _token;
+    final network = AppLocator.network;
 
     return Scaffold(
       appBar: AppBar(
@@ -169,7 +171,8 @@ class TokenDetailPage extends StatelessWidget {
                             },
                           )
                         else if (token.erc20ContractAddress != null &&
-                            token.erc20ContractAddress!.isNotEmpty)
+                            token.erc20ContractAddress!.isNotEmpty &&
+                            network is EvmWalletNetwork)
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, authState) {
                               if (authState is! AuthAuthenticated) {

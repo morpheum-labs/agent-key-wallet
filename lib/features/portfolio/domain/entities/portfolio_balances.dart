@@ -1,15 +1,18 @@
 import 'package:web3dart/web3dart.dart';
 
-/// Snapshot of native ETH + optional USDC for the wallet overview.
+/// Snapshot of native balance + optional USDC on EVM for the wallet overview.
+///
+/// Non-EVM networks return [evmNative] == null until a family-specific fetcher exists.
 class PortfolioBalances {
   const PortfolioBalances({
-    required this.eth,
+    this.evmNative,
     this.usdcRaw,
     this.usdcError,
     this.usdcSkipped = false,
   });
 
-  final EtherAmount eth;
+  /// Native EVM balance (wei) when the active network is EVM.
+  final EtherAmount? evmNative;
   final BigInt? usdcRaw;
   final Object? usdcError;
 

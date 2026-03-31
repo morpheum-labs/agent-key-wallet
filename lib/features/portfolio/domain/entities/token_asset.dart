@@ -2,6 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 /// Portfolio token row (MVP — replace with API + chain data later).
+///
+/// [erc20ContractAddress] applies to EVM; future Solana rows can add an SPL mint field
+/// in the same model without changing list UI.
 class TokenAsset extends Equatable {
   const TokenAsset({
     required this.symbol,
