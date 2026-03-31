@@ -1,3 +1,4 @@
+export 'components/components.dart';
 export 'blurs.dart';
 export 'colors.dart';
 export 'gradients.dart';
