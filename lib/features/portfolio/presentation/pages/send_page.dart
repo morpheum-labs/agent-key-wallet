@@ -8,7 +8,9 @@ import 'package:rainbow_flutter/core/error/failures.dart';
 import 'package:rainbow_flutter/core/locator.dart';
 import 'package:rainbow_flutter/core/widgets/glass_card.dart';
 import 'package:rainbow_flutter/core/widgets/primary_button.dart';
+import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
+import 'package:rainbow_flutter/design_system/radius.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 import 'package:rainbow_flutter/features/portfolio/domain/usecases/send_eth_usecase.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -47,6 +49,9 @@ class _SendPageState extends State<SendPage> {
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: AppColors.surfaceElevated,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(RainbowRadius.xl),
+          ),
           title: Text('Sent', style: Theme.of(ctx).textTheme.titleLarge),
           content: SelectableText(
             hash,
@@ -95,7 +100,11 @@ class _SendPageState extends State<SendPage> {
     final evm = network is EvmWalletNetwork ? network : null;
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           color: AppColors.label,
@@ -106,110 +115,116 @@ class _SendPageState extends State<SendPage> {
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
-      body: SafeArea(
-        child: evm == null
-            ? Padding(
-                padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: RainbowSpacing.lg.h),
-                    Text(
-                      'Native transfers for ${network.name} are not wired in this build. '
-                      'Switch to an EVM network in Profile to send with the current key, '
-                      'or add a Solana/Bitcoin signer and RPC stack.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 15.sp,
-                            color: AppColors.labelSecondary,
-                          ),
-                    ),
-                  ],
-                ),
-              )
-            : SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: RainbowSpacing.lg.h),
-                    Text(
-                      'Send native ${evm.nativeSymbol} on ${evm.name} (same RPC as balance). '
-                      'Gas is paid in ${evm.nativeSymbol}.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 14.sp,
-                            color: AppColors.labelSecondary,
-                          ),
-                    ),
-                    SizedBox(height: RainbowSpacing.xxl.h),
-                    GlassCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'Recipient',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppColors.labelSecondary,
-                                ),
-                          ),
-                          SizedBox(height: RainbowSpacing.sm.h),
-                          TextField(
-                            controller: _toController,
-                            enabled: !_submitting,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            decoration: const InputDecoration(
-                              hintText: '0x…',
-                              border: InputBorder.none,
-                              isDense: true,
+      body: WalletFlowBackground(
+        orbAccent: AppColors.accent,
+        child: SafeArea(
+          child: evm == null
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: RainbowSpacing.lg.h),
+                      Text(
+                        'Native transfers for ${network.name} are not wired in this build. '
+                        'Switch to an EVM network in Profile to send with the current key, '
+                        'or add a Solana/Bitcoin signer and RPC stack.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 15.sp,
+                              color: AppColors.labelSecondary,
                             ),
-                            autocorrect: false,
-                            keyboardType: TextInputType.visiblePassword,
-                            textInputAction: TextInputAction.next,
-                          ),
-                          SizedBox(height: RainbowSpacing.xl.h),
-                          Text(
-                            'Amount (${evm.nativeSymbol})',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppColors.labelSecondary,
-                                ),
-                          ),
-                          SizedBox(height: RainbowSpacing.sm.h),
-                          TextField(
-                            controller: _amountController,
-                            enabled: !_submitting,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            decoration: const InputDecoration(
-                              hintText: '0.0',
-                              border: InputBorder.none,
-                              isDense: true,
-                            ),
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                            ],
-                            textInputAction: TextInputAction.done,
-                            onSubmitted: (_) => _onSend(),
-                          ),
-                        ],
                       ),
-                    ),
-                    SizedBox(height: RainbowSpacing.xxl.h),
-                    _submitting
-                        ? Center(
-                            child: SizedBox(
-                              width: 28.w,
-                              height: 28.w,
-                              child: const CircularProgressIndicator(strokeWidth: 2),
+                    ],
+                  ),
+                )
+              : SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: RainbowSpacing.lg.h),
+                      Text(
+                        'Send native ${evm.nativeSymbol} on ${evm.name} (same RPC as balance). '
+                        'Gas is paid in ${evm.nativeSymbol}.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 14.sp,
+                              color: AppColors.labelSecondary,
                             ),
-                          )
-                        : PrimaryButton(
-                            label: 'Send',
-                            icon: Icons.north_east_rounded,
-                            onPressed: _onSend,
-                          ),
-                    SizedBox(height: RainbowSpacing.xxl.h),
-                  ],
+                      ),
+                      SizedBox(height: RainbowSpacing.xxl.h),
+                      GlassCard(
+                        padding: EdgeInsets.all(RainbowSpacing.xl.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Recipient',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.labelSecondary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            SizedBox(height: RainbowSpacing.sm.h),
+                            TextField(
+                              controller: _toController,
+                              enabled: !_submitting,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              decoration: const InputDecoration(
+                                hintText: '0x…',
+                                border: InputBorder.none,
+                                isDense: true,
+                              ),
+                              autocorrect: false,
+                              keyboardType: TextInputType.visiblePassword,
+                              textInputAction: TextInputAction.next,
+                            ),
+                            SizedBox(height: RainbowSpacing.xl.h),
+                            Text(
+                              'Amount (${evm.nativeSymbol})',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.labelSecondary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            SizedBox(height: RainbowSpacing.sm.h),
+                            TextField(
+                              controller: _amountController,
+                              enabled: !_submitting,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              decoration: const InputDecoration(
+                                hintText: '0.0',
+                                border: InputBorder.none,
+                                isDense: true,
+                              ),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                              ],
+                              textInputAction: TextInputAction.done,
+                              onSubmitted: (_) => _onSend(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: RainbowSpacing.xxl.h),
+                      _submitting
+                          ? Center(
+                              child: SizedBox(
+                                width: 28.w,
+                                height: 28.w,
+                                child: const CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            )
+                          : PrimaryButton(
+                              label: 'Send',
+                              icon: Icons.north_east_rounded,
+                              onPressed: _onSend,
+                            ),
+                      SizedBox(height: RainbowSpacing.xxl.h),
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }
