@@ -365,7 +365,7 @@ class _ActivityTxRow extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      '${item.hash.substring(0, 6)}…${item.hash.substring(item.hash.length - 4)}',
+                      _shortTxHash(item.hash),
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: AppColors.labelSecondary,
                             fontSize: 10.sp,
@@ -380,6 +380,11 @@ class _ActivityTxRow extends StatelessWidget {
       ),
     );
   }
+}
+
+String _shortTxHash(String h) {
+  if (h.length <= 12) return h;
+  return '${h.substring(0, 6)}…${h.substring(h.length - 4)}';
 }
 
 String _relTime(int timestampSec) {

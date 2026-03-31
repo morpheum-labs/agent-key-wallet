@@ -50,14 +50,8 @@ class EvmTxHistoryRemoteDataSource {
       final decoded = jsonDecode(res.body);
       if (decoded is! Map<String, dynamic>) return [];
 
-      final status = decoded['status']?.toString();
-      final message = decoded['message']?.toString() ?? '';
-      if (status != '1') {
-        if (message.toLowerCase().contains('no transactions')) return [];
-        return [];
-      }
-
       final raw = decoded['result'];
+      if (raw is String) return [];
       if (raw is! List<dynamic>) return [];
 
       final user = address.toLowerCase();
