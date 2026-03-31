@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:rainbow_flutter/core/widgets/rainbow_hero_glows.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
 
 /// Full-bleed wallet backdrop: [RainbowGradients.walletBackdrop] plus optional accent orb.
@@ -10,11 +11,15 @@ class WalletFlowBackground extends StatelessWidget {
     required this.child,
     this.orbAccent,
     this.showGradient = true,
+    this.showHeroGlows = false,
   });
 
   final Widget child;
   final Color? orbAccent;
   final bool showGradient;
+
+  /// Decorative radial glows (same language as Wallet home) behind content.
+  final bool showHeroGlows;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,7 @@ class WalletFlowBackground extends StatelessWidget {
               ),
             ),
           ),
+        if (showHeroGlows) const Positioned.fill(child: RainbowHeroGlows()),
         child,
       ],
     );

@@ -46,30 +46,66 @@ class RainbowQuickActions extends StatelessWidget {
         ),
         if (onSwap != null) ...[
           SizedBox(height: RainbowSpacing.md.h),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: swapEnabled ? onSwap : null,
-              icon: Icon(Icons.swap_horiz_rounded, size: 22.sp, color: AppColors.label),
-              label: Text(
-                'Swap',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: RainbowSpacing.md.h),
-                side: const BorderSide(color: AppColors.borderGlass),
-                foregroundColor: AppColors.label,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(RainbowRadius.md),
-                ),
-                backgroundColor: AppColors.surfacePrimary.withValues(alpha: 0.35),
-              ),
-            ),
+          _SpringSwapOutlineButton(
+            enabled: swapEnabled,
+            onPressed: onSwap!,
           ),
         ],
       ],
+    );
+  }
+}
+
+class _SpringSwapOutlineButton extends StatefulWidget {
+  const _SpringSwapOutlineButton({
+    required this.enabled,
+    required this.onPressed,
+  });
+
+  final bool enabled;
+  final VoidCallback onPressed;
+
+  @override
+  State<_SpringSwapOutlineButton> createState() => _SpringSwapOutlineButtonState();
+}
+
+class _SpringSwapOutlineButtonState extends State<_SpringSwapOutlineButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.enabled;
+    return SizedBox(
+      width: double.infinity,
+      child: GestureDetector(
+        onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+        onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,
+        onTapCancel: enabled ? () => setState(() => _pressed = false) : null,
+        child: AnimatedScale(
+          scale: _pressed && enabled ? 0.97 : 1.0,
+          duration: Duration(milliseconds: _pressed && enabled ? 90 : 400),
+          curve: _pressed && enabled ? Curves.easeOut : Curves.easeOutBack,
+          child: OutlinedButton.icon(
+            onPressed: enabled ? widget.onPressed : null,
+            icon: Icon(Icons.swap_horiz_rounded, size: 22.sp, color: AppColors.label),
+            label: Text(
+              'Swap',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: RainbowSpacing.md.h),
+              side: const BorderSide(color: AppColors.borderGlass),
+              foregroundColor: AppColors.label,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(RainbowRadius.md),
+              ),
+              backgroundColor: AppColors.surfacePrimary.withValues(alpha: 0.35),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

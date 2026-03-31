@@ -15,7 +15,7 @@ const List<({IconData icon, String label})> kRainbowMainTabItems = [
   (icon: Icons.person_outline_rounded, label: 'Profile'),
 ];
 
-/// Frosted bar with pill selection, elastic scale, and accent glow.
+/// Frosted bar with pill selection, elastic scale, accent glow, and spring tap feedback.
 class RainbowBottomTabBar extends StatelessWidget {
   const RainbowBottomTabBar({
     super.key,
@@ -59,78 +59,117 @@ class RainbowBottomTabBar extends StatelessWidget {
                 children: [
                   for (var i = 0; i < items.length; i++)
                     Expanded(
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => onTap(i),
-                          splashColor: AppColors.accent.withValues(alpha: 0.12),
-                          child: Center(
-                            child: AnimatedScale(
-                              scale: i == currentIndex ? 1.06 : 1.0,
-                              duration: const Duration(milliseconds: 520),
-                              curve: Curves.elasticOut,
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 260),
-                                curve: Curves.easeOutCubic,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 6.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(RainbowRadius.full),
-                                  gradient: i == currentIndex
-                                      ? LinearGradient(
-                                          colors: [
-                                            AppColors.accent.withValues(alpha: 0.22),
-                                            AppColors.accentSecondary.withValues(alpha: 0.12),
-                                          ],
-                                        )
-                                      : null,
-                                  border: Border.all(
-                                    color: i == currentIndex
-                                        ? AppColors.accent.withValues(alpha: 0.35)
-                                        : Colors.transparent,
-                                  ),
-                                  boxShadow: i == currentIndex
-                                      ? [
-                                          BoxShadow(
-                                            color: AppColors.accent.withValues(alpha: 0.2),
-                                            blurRadius: 14,
-                                            spreadRadius: -2,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ]
-                                      : null,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      items[i].icon,
-                                      size: 22.sp,
-                                      color: i == currentIndex ? AppColors.accent : AppColors.labelSecondary,
-                                    ),
-                                    SizedBox(height: 2.h),
-                                    Text(
-                                      items[i].label,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            fontSize: 10.sp,
-                                            fontWeight: i == currentIndex ? FontWeight.w700 : FontWeight.w500,
-                                            color: i == currentIndex ? AppColors.label : AppColors.labelSecondary,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                      child: _RainbowTabButton(
+                        selected: i == currentIndex,
+                        icon: items[i].icon,
+                        label: items[i].label,
+                        onTap: () => onTap(i),
                       ),
                     ),
                 ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RainbowTabButton extends StatefulWidget {
+  const _RainbowTabButton({
+    required this.selected,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final bool selected;
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  State<_RainbowTabButton> createState() => _RainbowTabButtonState();
+}
+
+class _RainbowTabButtonState extends State<_RainbowTabButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: widget.onTap,
+        onTapDown: (_) => setState(() => _pressed = true),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTapCancel: () => setState(() => _pressed = false),
+        splashColor: AppColors.accent.withValues(alpha: 0.12),
+        child: Center(
+          child: AnimatedScale(
+            scale: widget.selected ? 1.06 : 1.0,
+            duration: const Duration(milliseconds: 520),
+            curve: Curves.elasticOut,
+            child: AnimatedScale(
+              scale: _pressed ? 0.92 : 1.0,
+              duration: Duration(milliseconds: _pressed ? 90 : 380),
+              curve: _pressed ? Curves.easeOut : Curves.easeOutBack,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutCubic,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 6.h,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(RainbowRadius.full),
+                  gradient: widget.selected
+                      ? LinearGradient(
+                          colors: [
+                            AppColors.accent.withValues(alpha: 0.22),
+                            AppColors.accentSecondary.withValues(alpha: 0.12),
+                          ],
+                        )
+                      : null,
+                  border: Border.all(
+                    color: widget.selected
+                        ? AppColors.accent.withValues(alpha: 0.35)
+                        : Colors.transparent,
+                  ),
+                  boxShadow: widget.selected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.accent.withValues(alpha: 0.2),
+                            blurRadius: 14,
+                            spreadRadius: -2,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      widget.icon,
+                      size: 22.sp,
+                      color: widget.selected ? AppColors.accent : AppColors.labelSecondary,
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      widget.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: 10.sp,
+                            fontWeight: widget.selected ? FontWeight.w700 : FontWeight.w500,
+                            color: widget.selected ? AppColors.label : AppColors.labelSecondary,
+                          ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

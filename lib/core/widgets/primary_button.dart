@@ -30,9 +30,9 @@ class _PrimaryButtonState extends State<PrimaryButton> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: AnimatedScale(
-        scale: _pressed && enabled ? 0.96 : 1.0,
-        duration: const Duration(milliseconds: 110),
-        curve: Curves.easeOut,
+        scale: _pressed && enabled ? 0.94 : 1.0,
+        duration: Duration(milliseconds: _pressed && enabled ? 90 : 420),
+        curve: _pressed && enabled ? Curves.easeOut : Curves.easeOutBack,
         child: Material(
           color: Colors.transparent,
           child: InkWell(
