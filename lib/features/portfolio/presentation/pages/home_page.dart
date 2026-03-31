@@ -21,8 +21,6 @@ import 'package:rainbow_flutter/features/portfolio/presentation/widgets/wallet_b
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  static const _tabBarPad = 72.0;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
@@ -30,31 +28,71 @@ class HomePage extends StatelessWidget {
         if (state is! AuthAuthenticated) {
           return const Scaffold(body: SizedBox.shrink());
         }
-        final address = state.summary.ethereumAddressHex;
-        final network = AppLocator.network;
-        final base = mockPortfolioTokens(network);
+        return _HomeWalletContent(
+          address: state.summary.ethereumAddressHex,
+          shortAddress: state.summary.shortAddress,
+        );
+      },
+    );
+  }
+}
 
-        return WalletBalancesFutureBuilder(
-          address: address,
-          builder: (context, snap) {
-            final tokens = portfolioTokenMapper.mapHomeRows(base, snap, network.nativeSymbol);
-            final headline = portfolioTokenMapper.nativeBalanceHeadline(snap, network.nativeSymbol);
+class _HomeWalletContent extends StatefulWidget {
+  const _HomeWalletContent({
+    required this.address,
+    required this.shortAddress,
+  });
 
-            return Scaffold(
-              backgroundColor: AppColors.background,
-              body: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: RainbowGradients.walletBackdrop(),
-                      ),
-                    ),
+  final String address;
+  final String shortAddress;
+
+  @override
+  State<_HomeWalletContent> createState() => _HomeWalletContentState();
+}
+
+class _HomeWalletContentState extends State<_HomeWalletContent> {
+  final GlobalKey<WalletBalancesFutureBuilderState> _balancesKey = GlobalKey();
+
+  static const _tabBarPad = 72.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final network = AppLocator.network;
+    final base = mockPortfolioTokens(network);
+
+    return WalletBalancesFutureBuilder(
+      key: _balancesKey,
+      address: widget.address,
+      builder: (context, snap) {
+        final tokens = portfolioTokenMapper.mapHomeRows(base, snap, network.nativeSymbol);
+        final headline = portfolioTokenMapper.nativeBalanceHeadline(snap, network.nativeSymbol);
+
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RainbowGradients.walletBackdrop(),
                   ),
-                  const RainbowHeroGlows(),
-                  CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
+                ),
+              ),
+              const RainbowHeroGlows(),
+              Positioned.fill(
+                child: RefreshIndicator(
+                  color: AppColors.accentSecondary,
+                  backgroundColor: AppColors.surfaceElevated,
+                  displacement: 48,
+                  onRefresh: () async {
+                    final s = _balancesKey.currentState;
+                    if (s != null) await s.reload();
+                  },
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
                     slivers: [
                       SliverSafeArea(
                         bottom: false,
@@ -70,7 +108,7 @@ class HomePage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _WalletHeader(
-                                  shortAddress: state.summary.shortAddress,
+                                  shortAddress: widget.shortAddress,
                                   networkName: network.name,
                                 )
                                     .animate()
@@ -207,10 +245,10 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            );
-          },
+            ],
+          ),
         );
       },
     );

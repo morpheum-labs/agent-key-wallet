@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:rainbow_flutter/core/widgets/glass_card.dart';
+import 'package:rainbow_flutter/core/widgets/wallet_flow_background.dart';
 import 'package:rainbow_flutter/design_system/colors.dart';
 import 'package:rainbow_flutter/design_system/gradients.dart';
+import 'package:rainbow_flutter/design_system/radius.dart';
 import 'package:rainbow_flutter/design_system/spacing.dart';
 
 class ActivityPage extends StatelessWidget {
@@ -11,52 +14,87 @@ class ActivityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            left: -30.w,
-            top: 100.h,
-            child: IgnorePointer(
-              child: Container(
-                width: 160.w,
-                height: 160.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RainbowGradients.radialGlow(
-                    AppColors.accentGreen,
-                    opacity: 0.18,
+      backgroundColor: AppColors.background,
+      body: WalletFlowBackground(
+        orbAccent: AppColors.accentGreen,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 3.w,
+                      height: 20.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(RainbowRadius.full),
+                        gradient: RainbowGradients.accentRibbon(),
+                      ),
+                    ),
+                    SizedBox(width: RainbowSpacing.sm.w),
+                    Text(
+                      'Activity',
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                            fontSize: 32.sp,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.8,
+                          ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: RainbowSpacing.md.h),
+                Text(
+                  'Signed transactions and transfers will stream here once indexing is wired.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 15.sp,
+                        color: AppColors.labelSecondary,
+                        height: 1.45,
+                      ),
+                ),
+                SizedBox(height: RainbowSpacing.xxl.h),
+                GlassCard(
+                  padding: EdgeInsets.all(RainbowSpacing.xl.w),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.receipt_long_rounded,
+                        size: 28.sp,
+                        color: AppColors.accentGreen,
+                      ),
+                      SizedBox(width: RainbowSpacing.lg.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'No activity yet',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                            SizedBox(height: RainbowSpacing.xs.h),
+                            Text(
+                              'Send or receive on the Wallet tab — history will show up here automatically.',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.labelSecondary,
+                                    height: 1.4,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
+                SizedBox(height: RainbowSpacing.xxl.h),
+              ],
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: RainbowSpacing.xxl.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Activity',
-                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 32.sp,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.8,
-                        ),
-                  ),
-                  SizedBox(height: RainbowSpacing.md.h),
-                  Text(
-                    'Transaction history will appear here.',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 15.sp,
-                          color: AppColors.labelSecondary,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
